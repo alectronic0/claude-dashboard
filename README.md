@@ -114,6 +114,72 @@ Reload the page after each refresh to see updated data.
 
 ---
 
+## Claude Code integration
+
+The dashboard ships with two integrations that make it part of your Claude Code workflow.
+
+### Nudge hook — critical alerts on every prompt
+
+`nudge-hook.py` reads `dashboard-data.js` and injects **red nudges** (failing CI, imminent deadlines) directly into Claude's context on every prompt. You never need to open the browser to know something is on fire.
+
+**Setup — add to `~/.claude/settings.json`:**
+
+```json
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "python3 ~/.claude/app/dashboard/nudge-hook.py 2>/dev/null",
+            "type": "command"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+When there are red nudges, Claude will see:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚠  DASHBOARD NUDGES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔴 CI failing: my-repo #123
+🔴 Deadline 3d: PROJ-456 — My ticket summary
+```
+
+Silent when nothing is on fire. Ignores data older than 24h.
+
+### Refresh skill — `/refresh-dashboard`
+
+Create `~/.claude/skills/refresh-dashboard/SKILL.md`:
+
+```markdown
+---
+name: refresh-dashboard
+description: |
+  Refresh the local work dashboard data and report what changed.
+  Runs python3 ~/.claude/app/dashboard/refresh.py then summarises the result.
+  Use when: dashboard data is stale, after merging PRs, before standup.
+user-invocable: true
+version: 1.0.0
+---
+
+## What to do
+
+1. Determine the flag: --github, --jira, --local, or none (full refresh)
+2. Run: python3 ~/.claude/app/dashboard/refresh.py [flag]
+3. Report: PR count, ticket count, any red nudges, data timestamp
+4. If user asks to open: open ~/.claude/app/dashboard/work-dashboard.html
+```
+
+Then type `/refresh-dashboard` in any Claude Code session to refresh and get a summary.
+
+---
+
 ## Customising the static cards
 
 The Work tab has two static swimlanes — **General** and **Personal** — for recurring items that don't live in Jira (token rotations, side projects, ideas, etc.).
