@@ -1,0 +1,17 @@
+{
+  "_comment": "Copy this file to config.json and fill in your values. config.json is gitignored.",
+  "github": {
+    "username": "your-github-username",
+    "org": "your-github-org",
+    "team_members": ["teammate1", "teammate2"],
+    "primary_repos": ["repo1", "repo2", "repo3"],
+    "staging_branch": "staging"
+  },
+  "jira": {
+    "project": "PROJ"
+  },
+  "dashboard": {
+    "title": "Work Dashboard",
+    "subtitle": "Your Team · Your Company"
+  }
+}

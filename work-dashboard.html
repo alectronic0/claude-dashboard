@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Work Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <script src="dashboard-data.js"></script>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1 id="dashboard-title">Work Dashboard</h1>
+    <p id="dashboard-subtitle"></p>
+  </div>
+  <div class="header-right">
+    <div class="stat-pill">Updated <span id="stat-updated">—</span></div>
+    <div class="stat-pill">In Review <span id="stat-in-review">—</span></div>
+    <div class="stat-pill">Tickets <span id="stat-tickets">—</span></div>
+  </div>
+</div>
+
+<div class="global-refresh-bar">
+  <span class="refresh-bar-label">Refresh</span>
+  <button class="refresh-btn refresh-btn-all" onclick="copyText(this,'python3 refresh.py')">↺ All</button>
+  <button class="refresh-btn" onclick="copyText(this,'python3 refresh.py --github')">GitHub</button>
+  <button class="refresh-btn" onclick="copyText(this,'python3 refresh.py --jira')">Jira</button>
+  <button class="refresh-btn" onclick="copyText(this,'python3 refresh.py --local')">Local</button>
+</div>
+
+<div id="nudges-content"></div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" data-tab="work">Work</button>
+  <button class="tab-btn" data-tab="prs">PRs</button>
+  <button class="tab-btn" data-tab="skills">Skills &amp; Agents</button>
+  <button class="tab-btn" data-tab="claude">Claude</button>
+</div>
+
+<!-- ══ WORK TAB ══ -->
+<div class="tab-panel active" id="tab-work">
+
+  <!-- Dynamic: Plans + Kanban swimlanes rendered by JS -->
+  <div id="work-content"></div>
+
+  <!-- Static: General swimlane — edit these with your own recurring items -->
+  <details class="work-collapsible" data-persist="work-general" open>
+    <summary><span class="toggle-arrow">▶</span>🧰 General <span class="col-count">3</span></summary>
+    <div class="swimlane-cards">
+
+      <div class="card no-ticket">
+        <div class="card-header">
+          <div class="card-meta"><span class="no-ticket-label">⚠ No Ticket</span><span class="badge badge-blocked">Needs fix</span></div>
+          <div class="card-title">Rotate expired API tokens</div>
+        </div>
+        <div class="next-action"><strong>Next:</strong> Check which MCP tokens are expired and rotate them.</div>
+        <button class="claude-prompt-btn" data-prompt="Let's rotate the expired API tokens, which ones need attention?" onclick="copyPrompt(this)">✦ Let's rotate the expired API tokens, which ones need attention?</button>
+      </div>
+
+      <div class="card no-ticket">
+        <div class="card-header">
+          <div class="card-meta"><span class="no-ticket-label">⚠ No Ticket</span><span class="badge badge-progress">Backlog</span></div>
+          <div class="card-title">PR review triage</div>
+        </div>
+        <div class="next-action"><strong>Next:</strong> Pass through inbound review requests and respond.</div>
+        <button class="claude-prompt-btn" data-prompt="Let's triage the open PR review requests, what do I have waiting?" onclick="copyPrompt(this)">✦ Let's triage the open PR review requests, what do I have waiting?</button>
+      </div>
+
+      <div class="card no-ticket">
+        <div class="card-header">
+          <div class="card-meta"><span class="no-ticket-label">⚠ No Ticket</span><span class="badge badge-progress">Backlog</span></div>
+          <div class="card-title">Backlog grooming</div>
+        </div>
+        <div class="next-action"><strong>Next:</strong> Review and prioritise the ticket backlog.</div>
+        <button class="claude-prompt-btn" data-prompt="Let's review the backlog and groom it, what's in there?" onclick="copyPrompt(this)">✦ Let's review the backlog and groom it, what's in there?</button>
+      </div>
+
+    </div>
+  </details><!-- end General swimlane -->
+
+  <!-- Static: Personal swimlane — edit these with your own personal items -->
+  <details class="work-collapsible" data-persist="work-personal" open>
+    <summary><span class="toggle-arrow">▶</span>🌍 Personal <span class="col-count">2</span></summary>
+    <div class="swimlane-cards">
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-meta"><span class="no-ticket-label">Project</span><span class="badge badge-review">In Progress</span></div>
+          <div class="card-title">Side project</div>
+        </div>
+        <div class="next-action"><strong>Next:</strong> Add your own personal projects here.</div>
+        <button class="claude-prompt-btn" data-prompt="Let's look at my side project, where did we leave off?" onclick="copyPrompt(this)">✦ Let's look at my side project, where did we leave off?</button>
+      </div>
+
+      <div class="card no-ticket">
+        <div class="card-header">
+          <div class="card-meta"><span class="no-ticket-label">Idea</span><span class="badge badge-progress">Idea</span></div>
+          <div class="card-title">New project idea</div>
+        </div>
+        <div class="next-action">Add your ideas here — they make great Claude conversation starters.</div>
+        <button class="claude-prompt-btn" data-prompt="Let's explore my new project idea, what do you think?" onclick="copyPrompt(this)">✦ Let's explore my new project idea, what do you think?</button>
+      </div>
+
+    </div>
+  </details><!-- end Personal swimlane -->
+
+</div><!-- end tab-work -->
+
+<!-- ══ PRs TAB ══ -->
+<div class="tab-panel" id="tab-prs">
+  <div id="pr-content"></div>
+</div><!-- end tab-prs -->
+
+<!-- ══ SKILLS TAB ══ -->
+<div class="tab-panel" id="tab-skills">
+  <div id="skills-content"></div>
+</div><!-- end tab-skills -->
+
+<!-- ══ CLAUDE TAB ══ -->
+<div class="tab-panel" id="tab-claude">
+  <div id="claude-content"></div>
+</div><!-- end tab-claude -->
+
+<script src="dashboard.js"></script>
+</body>
+</html>
