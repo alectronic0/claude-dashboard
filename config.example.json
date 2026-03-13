@@ -1,5 +1,5 @@
 {
-  "_comment": "Copy this file to config.json and fill in your values. config.json is gitignored.",
+  "_comment": "Copy to config.json and fill in your values. config.json is gitignored.",
   "github": {
     "username": "your-github-username",
     "org": "your-github-org",
@@ -8,10 +8,56 @@
     "staging_branch": "staging"
   },
   "jira": {
-    "project": "PROJ"
+    "project": "PROJ",
+    "base_url": "https://your-org.atlassian.net"
+  },
+  "slack": {
+    "base_url": "https://your-org.slack.com"
+  },
+  "pagerduty": {
+    "schedule_ids": ["SCHEDULE_ID"],
+    "escalation_policy_ids": ["POLICY_ID"],
+    "my_email": "you@example.com",
+    "base_url": "https://your-org.pagerduty.com"
   },
   "dashboard": {
     "title": "Work Dashboard",
     "subtitle": "Your Team · Your Company"
-  }
+  },
+  "apps": [
+    {
+      "_comment": "Add one entry per app/service you want to monitor",
+      "name": "my-api",
+      "environments": {
+        "production": {
+          "health_url": "https://my-api.example.com/health",
+          "dashboard_url": "https://deploy-tool.example.com/apps/my-api"
+        },
+        "staging": {
+          "health_url": "https://staging.my-api.example.com/health",
+          "dashboard_url": "https://deploy-tool-staging.example.com/apps/my-api"
+        }
+      }
+    }
+  ],
+  "config_repos": {
+    "_comment": "Repos that link to a config tool instead of a deployment dashboard",
+    "my-config-repo": {
+      "label": "🗂 Config",
+      "production_url": "https://config-tool.example.com/namespaces/my-namespace",
+      "staging_url": "https://config-tool-staging.example.com/namespaces/my-namespace"
+    }
+  },
+  "team": [
+    {
+      "_comment": "All fields except name/github/role are optional",
+      "name": "Teammate Name",
+      "github": "their-github-handle",
+      "role": "Senior Engineer",
+      "email": "their@example.com",
+      "slack": "their-slack-handle",
+      "jiraId": "atlassian-account-id",
+      "pdId": "pagerduty-user-id"
+    }
+  ]
 }

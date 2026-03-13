@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Work Dashboard</title>
+  <!-- TODO: add favicon -->
   <link rel="stylesheet" href="dashboard.css">
   <script src="dashboard-data.js"></script>
 </head>
@@ -15,27 +16,31 @@
     <p id="dashboard-subtitle"></p>
   </div>
   <div class="header-right">
-    <div class="stat-pill">Updated <span id="stat-updated">—</span></div>
-    <div class="stat-pill">In Review <span id="stat-in-review">—</span></div>
-    <div class="stat-pill">Tickets <span id="stat-tickets">—</span></div>
+    <div class="global-refresh-bar">
+      <span class="refresh-bar-label">Refresh</span>
+      <button class="refresh-btn refresh-btn-all" data-source="all"      onclick="copyText(this,'python3 ~/.claude/app/dashboard/refresh.py')">↺ All</button>
+      <button class="refresh-btn"                 data-source="github"   onclick="copyText(this,'python3 ~/.claude/app/dashboard/refresh.py --github')">GitHub</button>
+      <button class="refresh-btn"                 data-source="jira"     onclick="copyText(this,'python3 ~/.claude/app/dashboard/refresh.py --jira')">Jira</button>
+      <button class="refresh-btn"                 data-source="local"    onclick="copyText(this,'python3 ~/.claude/app/dashboard/refresh.py --local')">Local</button>
+      <button class="refresh-btn"                 data-source="oncall"   onclick="copyText(this,'python3 ~/.claude/app/dashboard/refresh.py --oncall')">On-call</button>
+      <button class="refresh-btn"                 data-source="calendar" onclick="copyText(this,'python3 ~/.claude/app/dashboard/refresh.py --calendar')">Calendar</button>
+    </div>
   </div>
 </div>
 
-<div class="global-refresh-bar">
-  <span class="refresh-bar-label">Refresh</span>
-  <button class="refresh-btn refresh-btn-all" onclick="copyText(this,'python3 refresh.py')">↺ All</button>
-  <button class="refresh-btn" onclick="copyText(this,'python3 refresh.py --github')">GitHub</button>
-  <button class="refresh-btn" onclick="copyText(this,'python3 refresh.py --jira')">Jira</button>
-  <button class="refresh-btn" onclick="copyText(this,'python3 refresh.py --local')">Local</button>
-</div>
-
+<div id="oncall-content"></div>
+<div id="calendar-content"></div>
 <div id="nudges-content"></div>
 
 <div class="tab-bar">
-  <button class="tab-btn active" data-tab="work">Work</button>
+  <button class="tab-btn active" data-tab="work">Tasks</button>
   <button class="tab-btn" data-tab="prs">PRs</button>
+  <button class="tab-btn" data-tab="team">Team</button>
+  <button class="tab-btn" data-tab="app">App</button>
   <button class="tab-btn" data-tab="skills">Skills &amp; Agents</button>
   <button class="tab-btn" data-tab="claude">Claude</button>
+  <button class="tab-btn" data-tab="workday">Workday</button>
+  <button class="tab-btn" data-tab="design">Design System</button>
 </div>
 
 <!-- ══ WORK TAB ══ -->
@@ -44,62 +49,55 @@
   <!-- Dynamic: Plans + Kanban swimlanes rendered by JS -->
   <div id="work-content"></div>
 
-  <!-- Static: General swimlane — edit these with your own recurring items -->
-  <details class="work-collapsible" data-persist="work-general" open>
-    <summary><span class="toggle-arrow">▶</span>🧰 General <span class="col-count">3</span></summary>
-    <div class="swimlane-cards">
 
-      <div class="card no-ticket">
-        <div class="card-header">
-          <div class="card-meta"><span class="no-ticket-label">⚠ No Ticket</span><span class="badge badge-blocked">Needs fix</span></div>
-          <div class="card-title">Rotate expired API tokens</div>
-        </div>
-        <div class="next-action"><strong>Next:</strong> Check which MCP tokens are expired and rotate them.</div>
-        <button class="claude-prompt-btn" data-prompt="Let's rotate the expired API tokens, which ones need attention?" onclick="copyPrompt(this)">✦ Let's rotate the expired API tokens, which ones need attention?</button>
-      </div>
-
-      <div class="card no-ticket">
-        <div class="card-header">
-          <div class="card-meta"><span class="no-ticket-label">⚠ No Ticket</span><span class="badge badge-progress">Backlog</span></div>
-          <div class="card-title">PR review triage</div>
-        </div>
-        <div class="next-action"><strong>Next:</strong> Pass through inbound review requests and respond.</div>
-        <button class="claude-prompt-btn" data-prompt="Let's triage the open PR review requests, what do I have waiting?" onclick="copyPrompt(this)">✦ Let's triage the open PR review requests, what do I have waiting?</button>
-      </div>
-
-      <div class="card no-ticket">
-        <div class="card-header">
-          <div class="card-meta"><span class="no-ticket-label">⚠ No Ticket</span><span class="badge badge-progress">Backlog</span></div>
-          <div class="card-title">Backlog grooming</div>
-        </div>
-        <div class="next-action"><strong>Next:</strong> Review and prioritise the ticket backlog.</div>
-        <button class="claude-prompt-btn" data-prompt="Let's review the backlog and groom it, what's in there?" onclick="copyPrompt(this)">✦ Let's review the backlog and groom it, what's in there?</button>
-      </div>
-
-    </div>
-  </details><!-- end General swimlane -->
-
-  <!-- Static: Personal swimlane — edit these with your own personal items -->
+  <!-- Static: Personal swimlane -->
   <details class="work-collapsible" data-persist="work-personal" open>
-    <summary><span class="toggle-arrow">▶</span>🌍 Personal <span class="col-count">2</span></summary>
+    <summary><span class="toggle-arrow">▶</span>🌍 Personal <span class="col-count">5</span></summary>
     <div class="swimlane-cards">
 
       <div class="card">
         <div class="card-header">
-          <div class="card-meta"><span class="no-ticket-label">Project</span><span class="badge badge-review">In Progress</span></div>
-          <div class="card-title">Side project</div>
+          <div class="card-meta"><span class="no-ticket-label">Personal</span><span class="badge badge-progress">Planning</span></div>
+          <div class="card-title">Japan trip — May 2026</div>
         </div>
-        <div class="next-action"><strong>Next:</strong> Add your own personal projects here.</div>
-        <button class="claude-prompt-btn" data-prompt="Let's look at my side project, where did we leave off?" onclick="copyPrompt(this)">✦ Let's look at my side project, where did we leave off?</button>
+        <div class="next-action"><strong>Next:</strong> Book flights &amp; accommodation.</div>
+        <button class="claude-prompt-btn" data-prompt="Let's look into Japan trip planning for May 2026, what can you tell me about this before we start?" onclick="copyPrompt(this)"><div class="prompt-btn-title">✦ Ask Claude...</div><div class="prompt-btn-text">Let's look into Japan trip planning for May 2026, what can you tell me about this before we start?</div></button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-meta"><span class="no-ticket-label">Project</span><span class="badge badge-review">In Progress</span></div>
+          <div class="card-title">Steam library matcher</div>
+        </div>
+        <div class="next-action"><strong>Next:</strong> Check progress on alectronic0 GitHub.</div>
+        <button class="claude-prompt-btn" data-prompt="Let's look into the Steam library matcher project, what can you tell me about this before we start?" onclick="copyPrompt(this)"><div class="prompt-btn-title">✦ Ask Claude...</div><div class="prompt-btn-text">Let's look into the Steam library matcher project, what can you tell me about this before we start?</div></button>
+      </div>
+
+      <div class="card no-ticket">
+        <div class="card-header">
+          <div class="card-meta"><span class="no-ticket-label">⚠ No Ticket</span><span class="badge badge-progress">Planning</span></div>
+          <div class="card-title">EV charger installation</div>
+        </div>
+        <div class="next-action"><strong>Next:</strong> Chase council/provider.</div>
+        <button class="claude-prompt-btn" data-prompt="Let's look into EV charger installation planning, what can you tell me about this before we start?" onclick="copyPrompt(this)"><div class="prompt-btn-title">✦ Ask Claude...</div><div class="prompt-btn-text">Let's look into EV charger installation planning, what can you tell me about this before we start?</div></button>
+      </div>
+
+      <div class="card no-ticket">
+        <div class="card-header">
+          <div class="card-meta"><span class="no-ticket-label">⚠ No Ticket</span><span class="badge badge-progress">Planning</span></div>
+          <div class="card-title">Bathroom renovation</div>
+        </div>
+        <div class="next-action"><strong>Next:</strong> Research contractors, get quotes.</div>
+        <button class="claude-prompt-btn" data-prompt="Let's look into bathroom renovation planning, what can you tell me about this before we start?" onclick="copyPrompt(this)"><div class="prompt-btn-title">✦ Ask Claude...</div><div class="prompt-btn-text">Let's look into bathroom renovation planning, what can you tell me about this before we start?</div></button>
       </div>
 
       <div class="card no-ticket">
         <div class="card-header">
           <div class="card-meta"><span class="no-ticket-label">Idea</span><span class="badge badge-progress">Idea</span></div>
-          <div class="card-title">New project idea</div>
+          <div class="card-title">Flight tracker API</div>
         </div>
-        <div class="next-action">Add your ideas here — they make great Claude conversation starters.</div>
-        <button class="claude-prompt-btn" data-prompt="Let's explore my new project idea, what do you think?" onclick="copyPrompt(this)">✦ Let's explore my new project idea, what do you think?</button>
+        <div class="next-action">Input a flight number, get % progress to destination. Integrate with calendar.</div>
+        <button class="claude-prompt-btn" data-prompt="Let's look into the flight tracker API idea, what can you tell me about this before we start?" onclick="copyPrompt(this)"><div class="prompt-btn-title">✦ Ask Claude...</div><div class="prompt-btn-text">Let's look into the flight tracker API idea, what can you tell me about this before we start?</div></button>
       </div>
 
     </div>
@@ -112,6 +110,16 @@
   <div id="pr-content"></div>
 </div><!-- end tab-prs -->
 
+<!-- ══ TEAM TAB ══ -->
+<div class="tab-panel" id="tab-team">
+  <div id="team-content"></div>
+</div><!-- end tab-team -->
+
+<!-- ══ APP TAB ══ -->
+<div class="tab-panel" id="tab-app">
+  <div id="app-content"></div>
+</div><!-- end tab-app -->
+
 <!-- ══ SKILLS TAB ══ -->
 <div class="tab-panel" id="tab-skills">
   <div id="skills-content"></div>
@@ -121,6 +129,34 @@
 <div class="tab-panel" id="tab-claude">
   <div id="claude-content"></div>
 </div><!-- end tab-claude -->
+
+<!-- ══ WORKDAY TAB ══ -->
+<div class="tab-panel" id="tab-workday">
+  <div id="workday-content">
+    <div style="padding: 24px 20px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+        <h2 style="margin:0;font-size:16px;">Workday</h2>
+        <span style="font-size:11px;padding:2px 8px;border-radius:10px;background:var(--surface2);color:var(--text-dim);border:1px solid var(--border);">WIP</span>
+      </div>
+      <p style="font-size:13px;color:var(--text-muted);margin:0 0 12px;">HR data integration — coming soon.</p>
+      <ul style="font-size:12px;color:var(--text-dim);margin:0;padding-left:18px;line-height:2;">
+        <li>Team time-off (next 90 days)</li>
+        <li>Company holidays</li>
+        <li>My upcoming leave</li>
+        <li>Payslips, goals, org chart (future)</li>
+      </ul>
+      <p style="font-size:11px;color:var(--text-dim);margin:16px 0 0;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;">
+        <strong>Blocked on:</strong> Workday ISU account + custom RaaS report access from IT.<br>
+        Fetcher skeleton: <code style="font-size:10px;">~/.claude/app/dashboard/fetchers/workday.py</code>
+      </p>
+    </div>
+  </div>
+</div><!-- end tab-workday -->
+
+<!-- ══ DESIGN SYSTEM TAB ══ -->
+<div class="tab-panel" id="tab-design">
+  <div id="design-content"></div>
+</div><!-- end tab-design -->
 
 <script src="dashboard.js"></script>
 </body>
